@@ -633,6 +633,129 @@
     }
 
     /* ============================================================
+       HISTORY TAB
+    ============================================================ */
+    .history-section {
+      padding-top: 20px;
+    }
+
+    .history-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .history-count {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-500);
+      letter-spacing: 0.5px;
+    }
+
+    .btn-clear-history {
+      height: 32px;
+      padding: 0 14px;
+      background: transparent;
+      color: var(--gray-500);
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-clear-history:active {
+      color: #B71C1C;
+      border-color: #EF5350;
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray-400);
+    }
+
+    .history-empty-icon {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .history-empty-text {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .history-entry {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 16px 14px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+      border-left: 3px solid var(--orange);
+      animation: slideUp 0.28s ease forwards;
+      opacity: 0;
+    }
+
+    .history-entry-meta {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-400);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .history-product-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--gray-200);
+      gap: 8px;
+    }
+
+    .history-product-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .history-product-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-product-price {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-600);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .history-winner-badge {
+      background: var(--green-dark);
+      color: var(--orange-light);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
        UTILITY
     ============================================================ */
     .hidden { display: none !important; }
@@ -669,6 +792,10 @@
     <button class="tab-btn" id="tab-btn-list"
             onclick="switchTab('list')" role="tab" aria-selected="false">
       My List
+    </button>
+    <button class="tab-btn" id="tab-btn-history"
+            onclick="switchTab('history')" role="tab" aria-selected="false">
+      History
     </button>
   </nav>
 
@@ -740,6 +867,27 @@
       </div>
     </div><!-- /tab-list -->
 
+    <!-- =====================================================
+         HISTORY TAB
+    ====================================================== -->
+    <div id="tab-history" class="hidden" role="tabpanel">
+      <div class="history-section">
+
+        <div class="history-header-row">
+          <div id="history-count" class="history-count hidden"></div>
+          <button class="btn-clear-history" onclick="clearHistory()">Clear All</button>
+        </div>
+
+        <div id="history-container"></div>
+
+        <div id="history-empty" class="history-empty">
+          <span class="history-empty-icon">🕐</span>
+          <div class="history-empty-text">No comparisons yet.<br>Your history will appear here.</div>
+        </div>
+
+      </div>
+    </div><!-- /tab-history -->
+
   </div><!-- /container -->
 
 
@@ -747,25 +895,22 @@
     /* ============================================================
        STATE
     ============================================================ */
-    let productCount = 2;
-    let groceryList  = JSON.parse(localStorage.getItem('tindacheck-list') || '[]');
+    let productCount    = 2;
+    let groceryList     = JSON.parse(localStorage.getItem('tindacheck-list')    || '[]');
+    let comparisonHistory = JSON.parse(localStorage.getItem('tindacheck-history') || '[]');
 
 
     /* ============================================================
        TAB SWITCHING
     ============================================================ */
     function switchTab(tab) {
-      const isCompare = tab === 'compare';
-
-      document.getElementById('tab-compare').classList.toggle('hidden', !isCompare);
-      document.getElementById('tab-list').classList.toggle('hidden',    isCompare);
-
-      document.getElementById('tab-btn-compare').classList.toggle('active', isCompare);
-      document.getElementById('tab-btn-list').classList.toggle('active',    !isCompare);
-      document.getElementById('tab-btn-compare').setAttribute('aria-selected', isCompare);
-      document.getElementById('tab-btn-list').setAttribute('aria-selected',    !isCompare);
-
-      if (!isCompare) renderList();
+      ['compare', 'list', 'history'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`tab-btn-${t}`).classList.toggle('active', t === tab);
+        document.getElementById(`tab-btn-${t}`).setAttribute('aria-selected', t === tab);
+      });
+      if (tab === 'list')    renderList();
+      if (tab === 'history') renderHistory();
     }
 
 
@@ -1044,6 +1189,15 @@
         `);
       });
 
+      // Save to history
+      comparisonHistory.unshift({
+        ts: Date.now(),
+        products,
+        winnerIdx
+      });
+      if (comparisonHistory.length > 20) comparisonHistory.pop(); // keep last 20
+      localStorage.setItem('tindacheck-history', JSON.stringify(comparisonHistory));
+
       document.getElementById('results-section').classList.remove('hidden');
       setTimeout(() => {
         document.getElementById('results-section')
@@ -1060,6 +1214,59 @@
       hideError();
       renderProducts();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+
+    /* ============================================================
+       HISTORY
+    ============================================================ */
+    function renderHistory() {
+      const container = document.getElementById('history-container');
+      const emptyEl   = document.getElementById('history-empty');
+      const countEl   = document.getElementById('history-count');
+
+      container.innerHTML = '';
+
+      if (comparisonHistory.length === 0) {
+        emptyEl.classList.remove('hidden');
+        countEl.classList.add('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      countEl.classList.remove('hidden');
+      countEl.textContent = `${comparisonHistory.length} comparison${comparisonHistory.length !== 1 ? 's' : ''}`;
+
+      comparisonHistory.forEach((entry, idx) => {
+        const date = new Date(entry.ts);
+        const label = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+                    + ' · ' + date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+        const rows = entry.products.map((p, i) => {
+          const isWinner = i === entry.winnerIdx;
+          const label    = unitLabel(p.family);
+          return `
+            <div class="history-product-row">
+              <div class="history-product-name">${escapeHTML(p.name)}</div>
+              <div class="history-product-price">₱${p.perUnit.toFixed(2)} <span style="font-weight:400;color:var(--gray-400)">${label}</span></div>
+              ${isWinner ? '<span class="history-winner-badge">BEST</span>' : ''}
+            </div>`;
+        }).join('');
+
+        container.insertAdjacentHTML('beforeend', `
+          <div class="history-entry" style="animation-delay:${idx * 0.05}s">
+            <div class="history-entry-meta">${escapeHTML(label)}</div>
+            ${rows}
+          </div>
+        `);
+      });
+    }
+
+    function clearHistory() {
+      if (comparisonHistory.length === 0) return;
+      comparisonHistory = [];
+      localStorage.removeItem('tindacheck-history');
+      renderHistory();
     }
 
 
