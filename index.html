@@ -757,6 +757,29 @@
     }
 
     /* ============================================================
+       HINT TEXT & LIVE TOTAL
+    ============================================================ */
+    .field-hint {
+      font-size: 11px;
+      color: var(--gray-500);
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+
+    .live-total {
+      display: inline-block;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      padding: 5px 12px;
+      background: var(--green-pale);
+      border: 1px solid var(--green-light);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--green-mid);
+    }
+
+    /* ============================================================
        UTILITY & ANIMATIONS
     ============================================================ */
     .hidden { display: none !important; }
@@ -1234,21 +1257,25 @@
                 <label class="field-label" for="size-${i}">Size / Amount</label>
                 <input class="field-input" type="number" id="size-${i}"
                        placeholder="e.g. 500" min="0.01" step="any"
-                       inputmode="decimal" value="${saved.size || ''}" />
+                       inputmode="decimal" value="${saved.size || ''}"
+                       oninput="updateTotal(${i})" />
               </div>
               <div class="field-group">
                 <label class="field-label" for="unit-${i}">Unit</label>
-                <select class="field-select" id="unit-${i}">${selOpts}</select>
+                <select class="field-select" id="unit-${i}"
+                        onchange="updateTotal(${i})">${selOpts}</select>
               </div>
             </div>
+            <div class="field-hint">Enter size of one pack (e.g. 500 for a 500ml bottle).</div>
 
             <!-- 3. Quantity (packs / bottles) -->
-            <div class="field-group">
+            <div class="field-group" style="margin-top:12px">
               <label class="field-label" for="packs-${i}">Quantity (packs / bottles)</label>
               <input class="field-input" type="number" id="packs-${i}"
                      value="${saved.packs || 1}" min="1" step="1"
-                     inputmode="numeric" />
+                     inputmode="numeric" oninput="updateTotal(${i})" />
             </div>
+            <div id="total-${i}" class="live-total hidden"></div>
 
             <!-- 4. Total price -->
             <div class="field-group">
@@ -1264,6 +1291,36 @@
 
       const addBtn = document.getElementById('btn-add-product');
       if (addBtn) addBtn.classList.toggle('hidden', productData.length >= 5);
+
+      // Restore live totals for any pre-filled values
+      productData.forEach((_, i) => updateTotal(i));
+    }
+
+
+    /* ============================================================
+       LIVE TOTAL
+    ============================================================ */
+    function updateTotal(i) {
+      const sizeEl  = document.getElementById(`size-${i}`);
+      const unitEl  = document.getElementById(`unit-${i}`);
+      const packsEl = document.getElementById(`packs-${i}`);
+      const totalEl = document.getElementById(`total-${i}`);
+      if (!sizeEl || !totalEl) return;
+
+      const size  = parseFloat(sizeEl.value);
+      const packs = parseFloat(packsEl.value) || 1;
+      const unit  = unitEl.value;
+
+      if (!size || size <= 0) { totalEl.classList.add('hidden'); return; }
+
+      const baseTotal = toBase(size * packs, unit);
+      const baseUnit  = unit === 'kg' ? 'g' : unit === 'L' ? 'ml' : unit;
+      const display   = Number.isInteger(baseTotal)
+                        ? `${baseTotal}${baseUnit}`
+                        : `${parseFloat(baseTotal.toFixed(2))}${baseUnit}`;
+
+      totalEl.textContent = `Total: ${display}`;
+      totalEl.classList.remove('hidden');
     }
 
 
