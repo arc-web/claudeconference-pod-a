@@ -19,39 +19,39 @@
     }
 
     :root {
-      /* Green palette */
-      --green-dark:    #1B5E20;
-      --green:         #2E7D32;
-      --green-mid:     #388E3C;
-      --green-light:   #4CAF50;
-      --green-pale:    #E8F5E9;
+      /* Primary — deep ink */
+      --green-dark:    #0f0f1a;
+      --green:         #1a1a2e;
+      --green-mid:     #22223b;
+      --green-light:   #4a4e69;
+      --green-pale:    #f0eff8;
 
-      /* Orange palette */
-      --orange-dark:   #E65100;
-      --orange:        #F57C00;
-      --orange-light:  #FF9800;
-      --orange-pale:   #FFF8F0;
+      /* Accent — warm gold */
+      --orange-dark:   #9a7b2f;
+      --orange:        #c9a84c;
+      --orange-light:  #e2c16b;
+      --orange-pale:   #fdf8ec;
 
       /* Neutrals */
       --white:         #FFFFFF;
-      --gray-50:       #FAFAFA;
-      --gray-100:      #F5F5F5;
-      --gray-200:      #EEEEEE;
-      --gray-300:      #E0E0E0;
-      --gray-400:      #BDBDBD;
-      --gray-500:      #9E9E9E;
-      --gray-600:      #757575;
-      --gray-700:      #616161;
-      --gray-800:      #424242;
-      --text:          #212121;
+      --gray-50:       #faf9f7;
+      --gray-100:      #f4f3f0;
+      --gray-200:      #e8e6e1;
+      --gray-300:      #d4d0c8;
+      --gray-400:      #b0ab9e;
+      --gray-500:      #8a8478;
+      --gray-600:      #635e54;
+      --gray-700:      #4a4540;
+      --gray-800:      #2e2b27;
+      --text:          #1a1815;
 
       /* Misc */
       --radius-sm:     8px;
       --radius:        14px;
       --radius-lg:     20px;
-      --shadow-sm:     0 1px 4px rgba(0,0,0,0.10);
-      --shadow:        0 2px 10px rgba(0,0,0,0.12);
-      --shadow-lg:     0 4px 20px rgba(0,0,0,0.15);
+      --shadow-sm:     0 1px 4px rgba(0,0,0,0.07);
+      --shadow:        0 2px 12px rgba(0,0,0,0.09);
+      --shadow-lg:     0 6px 24px rgba(0,0,0,0.13);
     }
 
     /* ============================================================
@@ -69,31 +69,41 @@
       color: var(--text);
       min-height: 100vh;
       padding-bottom: 48px;
-      /* Keeps layout centred on wide screens while feeling native on mobile */
       max-width: 480px;
       margin: 0 auto;
+      letter-spacing: 0.01em;
     }
 
     /* ============================================================
        APP HEADER
     ============================================================ */
     .app-header {
-      background: linear-gradient(145deg, var(--green-dark) 0%, var(--green-light) 100%);
+      background: var(--green-dark);
       color: white;
-      padding: 28px 20px 32px;
+      padding: 32px 20px 36px;
       text-align: center;
       position: relative;
       overflow: hidden;
     }
 
-    /* Subtle decorative circle behind header */
+    /* Gold accent line at bottom of header */
+    .app-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    }
+
+    /* Subtle radial glow */
     .app-header::before {
       content: '';
       position: absolute;
-      top: -40px; right: -40px;
-      width: 160px; height: 160px;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 200px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.07);
+      background: radial-gradient(ellipse, rgba(201,168,76,0.12) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -106,15 +116,64 @@
 
     .header-title {
       font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--orange-light);
     }
 
     .header-subtitle {
-      font-size: 13px;
-      opacity: 0.82;
-      margin-top: 4px;
+      font-size: 12px;
+      opacity: 0.55;
+      margin-top: 6px;
       font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+       TAB NAVIGATION
+    ============================================================ */
+    .tab-nav {
+      display: flex;
+      background: var(--green-mid);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .tab-btn {
+      flex: 1;
+      height: 48px;
+      background: transparent;
+      color: rgba(255,255,255,0.45);
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 20%; right: 20%;
+      height: 2px;
+      background: var(--orange);
+      border-radius: 2px 2px 0 0;
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--orange-light);
+    }
+
+    .tab-btn.active::after {
+      transform: scaleX(1);
     }
 
     /* ============================================================
@@ -159,15 +218,15 @@
       cursor: pointer;
       color: var(--gray-600);
       transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-      min-height: 40px;          /* touch target */
+      min-height: 40px;
       -webkit-tap-highlight-color: transparent;
       line-height: 1;
     }
 
     .toggle-btn.active {
       background: var(--green);
-      color: white;
-      box-shadow: 0 2px 6px rgba(46, 125, 50, 0.35);
+      color: var(--orange-light);
+      box-shadow: 0 2px 8px rgba(15, 15, 26, 0.25);
     }
 
     /* ============================================================
@@ -179,7 +238,7 @@
       padding: 20px 18px;
       margin-top: 14px;
       box-shadow: var(--shadow);
-      border-left: 5px solid var(--green-light);
+      border-left: 3px solid var(--orange);
     }
 
     .product-card-header {
@@ -190,13 +249,13 @@
     }
 
     .product-badge {
-      background: var(--green-light);
-      color: white;
-      font-size: 11px;
-      font-weight: 800;
+      background: var(--green);
+      color: var(--orange-light);
+      font-size: 10px;
+      font-weight: 700;
       padding: 4px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.8px;
+      border-radius: 4px;
+      letter-spacing: 1.5px;
       flex-shrink: 0;
     }
 
@@ -223,15 +282,14 @@
       margin-bottom: 6px;
     }
 
-    /* Base style shared by inputs and selects */
     .field-input,
     .field-select {
       width: 100%;
-      height: 52px;                  /* large touch target */
+      height: 52px;
       border: 2px solid var(--gray-200);
       border-radius: var(--radius-sm);
       padding: 0 14px;
-      font-size: 16px;               /* 16px prevents iOS auto-zoom */
+      font-size: 16px;
       color: var(--text);
       background: var(--gray-50);
       transition: border-color 0.18s, background 0.18s;
@@ -246,14 +304,12 @@
       background: var(--white);
     }
 
-    /* Side-by-side price and quantity */
     .field-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
-    /* Custom dropdown arrow for select */
     .field-select {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
@@ -263,39 +319,38 @@
     }
 
     .field-select:focus {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234CAF50' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a4e69' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-color: var(--white);
     }
 
     /* ============================================================
        ACTION BUTTONS
     ============================================================ */
-
-    /* Primary CTA — Compare */
     .btn-compare {
       display: block;
       width: 100%;
       height: 60px;
-      background: linear-gradient(135deg, var(--orange-dark) 0%, var(--orange-light) 100%);
-      color: white;
-      border: none;
+      background: var(--green-dark);
+      color: var(--orange-light);
+      border: 1px solid var(--orange);
       border-radius: var(--radius);
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       cursor: pointer;
       margin-top: 22px;
-      box-shadow: 0 4px 16px rgba(245, 124, 0, 0.40);
-      transition: transform 0.12s, box-shadow 0.12s;
+      box-shadow: 0 4px 20px rgba(15, 15, 26, 0.18);
+      transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
       -webkit-tap-highlight-color: transparent;
     }
 
     .btn-compare:active {
       transform: scale(0.97);
-      box-shadow: 0 2px 8px rgba(245, 124, 0, 0.25);
+      background: var(--green-mid);
+      box-shadow: 0 2px 8px rgba(15, 15, 26, 0.12);
     }
 
-    /* Secondary — Reset */
     .btn-reset {
       display: block;
       width: 100%;
@@ -348,7 +403,6 @@
       letter-spacing: -0.3px;
     }
 
-    /* Individual result card */
     .result-card {
       background: var(--white);
       border-radius: var(--radius);
@@ -356,20 +410,18 @@
       margin-bottom: 12px;
       box-shadow: var(--shadow);
       border-left: 5px solid var(--gray-300);
-      opacity: 0;                   /* animated in */
+      opacity: 0;
       animation: slideUp 0.32s ease forwards;
     }
 
-    /* Stagger animation for each result card */
     .result-card:nth-child(1) { animation-delay: 0.00s; }
     .result-card:nth-child(2) { animation-delay: 0.07s; }
     .result-card:nth-child(3) { animation-delay: 0.14s; }
 
-    /* Winner gets a warm highlight */
     .result-card.winner {
       background: var(--orange-pale);
-      border-left-color: var(--orange-light);
-      box-shadow: 0 4px 18px rgba(255, 152, 0, 0.22);
+      border-left-color: var(--orange);
+      box-shadow: 0 4px 20px rgba(201, 168, 76, 0.18);
     }
 
     .result-card-top {
@@ -388,31 +440,29 @@
       flex: 1;
     }
 
-    /* "BEST DEAL" badge on winner */
     .badge-winner {
-      background: var(--orange-light);
-      color: white;
-      font-size: 11px;
-      font-weight: 800;
+      background: var(--green-dark);
+      color: var(--orange-light);
+      font-size: 10px;
+      font-weight: 700;
       padding: 4px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.6px;
+      border-radius: 4px;
+      letter-spacing: 1.2px;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
-    /* The big per-unit price number */
     .result-per-unit {
       font-size: 30px;
-      font-weight: 900;
-      color: var(--green);
+      font-weight: 800;
+      color: var(--green-mid);
       line-height: 1;
       margin-bottom: 5px;
       letter-spacing: -0.5px;
     }
 
     .result-card.winner .result-per-unit {
-      color: var(--orange);
+      color: var(--orange-dark);
     }
 
     .result-unit-label {
@@ -428,18 +478,16 @@
       margin-top: 2px;
     }
 
-    /* Savings callout inside non-winner cards */
     .result-savings {
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px solid var(--gray-200);
       font-size: 13px;
-      font-weight: 600;
-      color: var(--green-mid);
+      font-weight: 500;
+      color: var(--gray-600);
       line-height: 1.4;
     }
 
-    /* Mixed-unit info banner inside results */
     .mixed-unit-notice {
       background: #FFF9C4;
       color: #795548;
@@ -453,6 +501,138 @@
     }
 
     /* ============================================================
+       GROCERY LIST TAB
+    ============================================================ */
+    .list-section {
+      padding-top: 20px;
+    }
+
+    .list-add-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .list-add-row .field-input {
+      flex: 1;
+      height: 52px;
+    }
+
+    .btn-add {
+      height: 52px;
+      padding: 0 20px;
+      background: var(--green-dark);
+      color: var(--orange-light);
+      border: 1px solid var(--orange);
+      border-radius: var(--radius-sm);
+      font-size: 22px;
+      font-weight: 400;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      line-height: 1;
+    }
+
+    .btn-add:active {
+      background: var(--green-mid);
+    }
+
+    .list-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray-400);
+    }
+
+    .list-empty-icon {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .list-empty-text {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Each grocery item row */
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 14px 14px 14px 16px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow-sm);
+      border-left: 3px solid var(--gray-300);
+      animation: slideUp 0.25s ease forwards;
+      opacity: 0;
+    }
+
+    .list-item-name {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-list-compare {
+      height: 36px;
+      padding: 0 14px;
+      background: var(--orange-pale);
+      color: var(--orange-dark);
+      border: 1px solid var(--orange);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-list-compare:active {
+      background: var(--orange-light);
+    }
+
+    .btn-list-remove {
+      height: 36px;
+      width: 36px;
+      background: transparent;
+      color: var(--gray-400);
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-list-remove:active {
+      color: #B71C1C;
+      border-color: #EF5350;
+    }
+
+    .list-count {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-500);
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    /* ============================================================
        UTILITY
     ============================================================ */
     .hidden { display: none !important; }
@@ -461,7 +641,7 @@
        ANIMATIONS
     ============================================================ */
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(18px); }
+      from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -478,48 +658,87 @@
     <div class="header-subtitle">Find the best deal — instantly</div>
   </header>
 
+  <!-- =====================================================
+       TAB NAVIGATION
+  ====================================================== -->
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" id="tab-btn-compare"
+            onclick="switchTab('compare')" role="tab" aria-selected="true">
+      Compare
+    </button>
+    <button class="tab-btn" id="tab-btn-list"
+            onclick="switchTab('list')" role="tab" aria-selected="false">
+      My List
+    </button>
+  </nav>
+
   <div class="container">
 
     <!-- =====================================================
-         PRODUCT COUNT TOGGLE
+         COMPARE TAB
     ====================================================== -->
-    <div class="toggle-section">
-      <span class="toggle-label">Compare</span>
-      <div class="toggle-group" role="group" aria-label="Number of products to compare">
-        <button class="toggle-btn active" id="btn2"
-                onclick="setProductCount(2)" aria-pressed="true">
-          2 Items
-        </button>
-        <button class="toggle-btn" id="btn3"
-                onclick="setProductCount(3)" aria-pressed="false">
-          3 Items
-        </button>
+    <div id="tab-compare" role="tabpanel">
+
+      <div class="toggle-section">
+        <span class="toggle-label">Compare</span>
+        <div class="toggle-group" role="group" aria-label="Number of products to compare">
+          <button class="toggle-btn active" id="btn2"
+                  onclick="setProductCount(2)" aria-pressed="true">
+            2 Items
+          </button>
+          <button class="toggle-btn" id="btn3"
+                  onclick="setProductCount(3)" aria-pressed="false">
+            3 Items
+          </button>
+        </div>
       </div>
-    </div>
+
+      <div id="products-container"></div>
+
+      <button class="btn-compare" onclick="compare()">
+        Compare Prices
+      </button>
+
+      <div id="error-banner" class="error-banner hidden" role="alert"></div>
+
+      <section id="results-section" class="results-section hidden" aria-live="polite">
+        <div class="results-heading">Results</div>
+        <div id="results-container"></div>
+        <button class="btn-reset" onclick="resetApp()">↩ New Comparison</button>
+      </section>
+
+    </div><!-- /tab-compare -->
 
     <!-- =====================================================
-         PRODUCT INPUT CARDS  (rendered by JS)
+         MY LIST TAB
     ====================================================== -->
-    <div id="products-container"></div>
+    <div id="tab-list" class="hidden" role="tabpanel">
 
-    <!-- =====================================================
-         COMPARE BUTTON
-    ====================================================== -->
-    <button class="btn-compare" onclick="compare()">
-      🔍&nbsp; Compare Prices
-    </button>
+      <div class="list-section">
 
-    <!-- Error banner (shown on invalid input) -->
-    <div id="error-banner" class="error-banner hidden" role="alert"></div>
+        <!-- Add item input -->
+        <div class="list-add-row">
+          <input class="field-input" type="text" id="list-input"
+                 placeholder="e.g. Cooking oil, Rice, Sardines"
+                 autocomplete="off" autocorrect="off" spellcheck="false"
+                 onkeydown="if(event.key==='Enter') addListItem()" />
+          <button class="btn-add" onclick="addListItem()" aria-label="Add item">+</button>
+        </div>
 
-    <!-- =====================================================
-         RESULTS SECTION  (shown after Compare is tapped)
-    ====================================================== -->
-    <section id="results-section" class="results-section hidden" aria-live="polite">
-      <div class="results-heading">📊 Results</div>
-      <div id="results-container"></div>
-      <button class="btn-reset" onclick="resetApp()">↩&nbsp; New Comparison</button>
-    </section>
+        <!-- Item count -->
+        <div id="list-count" class="list-count hidden"></div>
+
+        <!-- Items -->
+        <div id="list-container"></div>
+
+        <!-- Empty state -->
+        <div id="list-empty" class="list-empty">
+          <span class="list-empty-icon">📋</span>
+          <div class="list-empty-text">Your list is empty.<br>Add items above to get started.</div>
+        </div>
+
+      </div>
+    </div><!-- /tab-list -->
 
   </div><!-- /container -->
 
@@ -528,49 +747,128 @@
     /* ============================================================
        STATE
     ============================================================ */
-    let productCount = 2;   // 2 or 3
+    let productCount = 2;
+    let groceryList  = JSON.parse(localStorage.getItem('tindacheck-list') || '[]');
+
+
+    /* ============================================================
+       TAB SWITCHING
+    ============================================================ */
+    function switchTab(tab) {
+      const isCompare = tab === 'compare';
+
+      document.getElementById('tab-compare').classList.toggle('hidden', !isCompare);
+      document.getElementById('tab-list').classList.toggle('hidden',    isCompare);
+
+      document.getElementById('tab-btn-compare').classList.toggle('active', isCompare);
+      document.getElementById('tab-btn-list').classList.toggle('active',    !isCompare);
+      document.getElementById('tab-btn-compare').setAttribute('aria-selected', isCompare);
+      document.getElementById('tab-btn-list').setAttribute('aria-selected',    !isCompare);
+
+      if (!isCompare) renderList();
+    }
+
+
+    /* ============================================================
+       GROCERY LIST
+    ============================================================ */
+    function saveList() {
+      localStorage.setItem('tindacheck-list', JSON.stringify(groceryList));
+    }
+
+    function addListItem() {
+      const input = document.getElementById('list-input');
+      const name  = input.value.trim();
+      if (!name) { input.focus(); return; }
+
+      groceryList.push(name);
+      saveList();
+      renderList();
+      input.value = '';
+      input.focus();
+    }
+
+    function removeListItem(idx) {
+      groceryList.splice(idx, 1);
+      saveList();
+      renderList();
+    }
+
+    /**
+     * Switch to the Compare tab and pre-fill Product 1's name field
+     * with the tapped grocery item.
+     */
+    function compareItem(name) {
+      switchTab('compare');
+      // Small delay so the tab panel is visible before we write to the input
+      setTimeout(() => {
+        const nameInput = document.getElementById('name-0');
+        if (nameInput) {
+          nameInput.value = name;
+          // Scroll to and focus the price field so user can start entering data
+          const priceInput = document.getElementById('price-0');
+          if (priceInput) {
+            priceInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            priceInput.focus();
+          }
+        }
+      }, 50);
+    }
+
+    function renderList() {
+      const container = document.getElementById('list-container');
+      const emptyEl   = document.getElementById('list-empty');
+      const countEl   = document.getElementById('list-count');
+
+      container.innerHTML = '';
+
+      if (groceryList.length === 0) {
+        emptyEl.classList.remove('hidden');
+        countEl.classList.add('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      countEl.classList.remove('hidden');
+      countEl.textContent = `${groceryList.length} item${groceryList.length !== 1 ? 's' : ''}`;
+
+      groceryList.forEach((name, idx) => {
+        container.insertAdjacentHTML('beforeend', `
+          <div class="list-item" style="animation-delay:${idx * 0.04}s">
+            <div class="list-item-name">${escapeHTML(name)}</div>
+            <button class="btn-list-compare"
+                    onclick="compareItem(${JSON.stringify(escapeHTML(name))})">
+              Compare
+            </button>
+            <button class="btn-list-remove" onclick="removeListItem(${idx})"
+                    aria-label="Remove ${escapeHTML(name)}">×</button>
+          </div>
+        `);
+      });
+    }
 
 
     /* ============================================================
        UNIT UTILITIES
     ============================================================ */
-
-    /**
-     * Returns the measurement "family" for a unit.
-     * This is used to decide whether two products can be directly compared.
-     */
     function unitFamily(unit) {
       if (unit === 'g'  || unit === 'kg')   return 'weight';
       if (unit === 'ml' || unit === 'L')    return 'volume';
       return 'piece';
     }
 
-    /**
-     * Converts a quantity to the smallest base unit:
-     *   kg  → grams        (×1000)
-     *   L   → millilitres  (×1000)
-     *   everything else stays as-is
-     */
     function toBase(quantity, unit) {
       if (unit === 'kg') return quantity * 1000;
       if (unit === 'L')  return quantity * 1000;
       return quantity;
     }
 
-    /**
-     * Calculates the normalised price:
-     *   weight / volume → price per 100 units (100 g or 100 ml)
-     *   piece           → price per single piece
-     */
     function pricePerUnit(price, quantity, unit) {
       const base   = toBase(quantity, unit);
       const family = unitFamily(unit);
       return family === 'piece' ? price / base : (price / base) * 100;
     }
 
-    /**
-     * Human-readable label for the normalised unit.
-     */
     function unitLabel(family) {
       if (family === 'weight') return 'per 100g';
       if (family === 'volume') return 'per 100ml';
@@ -595,22 +893,16 @@
       for (let i = 0; i < productCount; i++) {
         container.insertAdjacentHTML('beforeend', `
           <div class="product-card" id="card-${i}">
-
-            <!-- Card header -->
             <div class="product-card-header">
               <span class="product-badge">ITEM ${i + 1}</span>
               <span class="product-card-title">${names[i]}</span>
             </div>
-
-            <!-- Product name -->
             <div class="field-group">
               <label class="field-label" for="name-${i}">Product Name</label>
               <input class="field-input" type="text" id="name-${i}"
                      placeholder="${placeholders[i]}"
                      autocomplete="off" autocorrect="off" spellcheck="false" />
             </div>
-
-            <!-- Price + Quantity (side by side) -->
             <div class="field-row">
               <div class="field-group">
                 <label class="field-label" for="price-${i}">Price (₱)</label>
@@ -625,8 +917,6 @@
                        inputmode="decimal" />
               </div>
             </div>
-
-            <!-- Unit selector -->
             <div class="field-group">
               <label class="field-label" for="unit-${i}">Unit</label>
               <select class="field-select" id="unit-${i}">
@@ -637,8 +927,7 @@
                 <option value="piece">piece — each</option>
               </select>
             </div>
-
-          </div><!-- /product-card -->
+          </div>
         `);
       }
     }
@@ -649,13 +938,10 @@
     ============================================================ */
     function setProductCount(n) {
       productCount = n;
-
-      // Update toggle button states
       document.getElementById('btn2').classList.toggle('active', n === 2);
       document.getElementById('btn3').classList.toggle('active', n === 3);
       document.getElementById('btn2').setAttribute('aria-pressed', n === 2);
       document.getElementById('btn3').setAttribute('aria-pressed', n === 3);
-
       hideResults();
       hideError();
       renderProducts();
@@ -663,13 +949,12 @@
 
 
     /* ============================================================
-       COMPARE  — the main calculation logic
+       COMPARE — main calculation logic
     ============================================================ */
     function compare() {
       hideError();
       hideResults();
 
-      /* --- 1. Collect & validate inputs --- */
       const products = [];
 
       for (let i = 0; i < productCount; i++) {
@@ -679,13 +964,11 @@
         const qty     = parseFloat(document.getElementById(`qty-${i}`).value);
         const unit    = document.getElementById(`unit-${i}`).value;
 
-        // Validate price
         if (isNaN(price) || price <= 0) {
           showError(`⚠️ Please enter a valid price for ${name}.`);
           document.getElementById(`price-${i}`).focus();
           return;
         }
-        // Validate quantity
         if (isNaN(qty) || qty <= 0) {
           showError(`⚠️ Please enter a valid quantity for ${name}.`);
           document.getElementById(`qty-${i}`).focus();
@@ -694,29 +977,23 @@
 
         const family  = unitFamily(unit);
         const perUnit = pricePerUnit(price, qty, unit);
-
         products.push({ name, price, qty, unit, family, perUnit });
       }
 
-      /* --- 2. Check whether all products share the same unit family --- */
-      const families    = [...new Set(products.map(p => p.family))];
-      const mixedUnits  = families.length > 1;
+      const families   = [...new Set(products.map(p => p.family))];
+      const mixedUnits = families.length > 1;
 
-      /* --- 3. Find the winner (cheapest per-unit price) --- */
       let winnerIdx = -1;
       if (!mixedUnits) {
-        // Find index of lowest perUnit value
         winnerIdx = products.reduce(
           (bestIdx, p, i) => p.perUnit < products[bestIdx].perUnit ? i : bestIdx,
           0
         );
       }
 
-      /* --- 4. Build result cards --- */
       const container = document.getElementById('results-container');
       container.innerHTML = '';
 
-      // Show a notice if units are mixed
       if (mixedUnits) {
         container.insertAdjacentHTML('beforeend', `
           <div class="mixed-unit-notice">
@@ -726,7 +1003,6 @@
         `);
       }
 
-      // Sort: winner first, then ascending by perUnit price
       const sorted = products
         .map((p, originalIndex) => ({ ...p, originalIndex }))
         .sort((a, b) => {
@@ -736,16 +1012,15 @@
         });
 
       sorted.forEach(p => {
-        const isWinner  = p.originalIndex === winnerIdx;
-        const label     = unitLabel(p.family);
-        const priceStr  = `₱${p.perUnit.toFixed(2)}`;
+        const isWinner = p.originalIndex === winnerIdx;
+        const label    = unitLabel(p.family);
+        const priceStr = `₱${p.perUnit.toFixed(2)}`;
 
-        // Savings line for non-winners (only when a winner exists)
         let savingsHTML = '';
         if (!isWinner && winnerIdx !== -1) {
           const winner = products[winnerIdx];
           const diff   = p.perUnit - winner.perUnit;
-          savingsHTML  = `
+          savingsHTML = `
             <div class="result-savings">
               💡 <strong>${escapeHTML(winner.name)}</strong> saves you
               ₱${diff.toFixed(2)} ${label}
@@ -769,7 +1044,6 @@
         `);
       });
 
-      /* --- 5. Show results and scroll to them --- */
       document.getElementById('results-section').classList.remove('hidden');
       setTimeout(() => {
         document.getElementById('results-section')
@@ -779,7 +1053,7 @@
 
 
     /* ============================================================
-       RESET — clear everything and start fresh
+       RESET
     ============================================================ */
     function resetApp() {
       hideResults();
@@ -790,9 +1064,8 @@
 
 
     /* ============================================================
-       SMALL HELPERS
+       HELPERS
     ============================================================ */
-
     function showError(msg) {
       const el = document.getElementById('error-banner');
       el.textContent = msg;
@@ -807,10 +1080,6 @@
       document.getElementById('results-section').classList.add('hidden');
     }
 
-    /**
-     * Sanitise user-entered text before inserting into innerHTML
-     * to prevent any accidental HTML injection.
-     */
     function escapeHTML(str) {
       return str
         .replace(/&/g, '&amp;')
